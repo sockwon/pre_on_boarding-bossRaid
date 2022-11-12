@@ -7,7 +7,6 @@ import {
   ManyToOne,
   JoinTable,
 } from "typeorm";
-import BossRaid from "./BossRaid";
 import User from "./User";
 
 @Entity()
@@ -17,9 +16,6 @@ export class RaidRecord {
 
   @ManyToOne((type) => User, (user) => user.id)
   user!: number;
-
-  @ManyToOne((type) => BossRaid, (bossRaid) => bossRaid.id)
-  bossRaid!: number;
 
   @Column({ type: "int", default: 0 })
   score!: number;
@@ -33,7 +29,7 @@ export class RaidRecord {
   @CreateDateColumn()
   enterTime!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: "timestamp", nullable: true, default: null })
   endTime!: Date;
 }
 
