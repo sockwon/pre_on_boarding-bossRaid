@@ -3,7 +3,6 @@
  */
 
 import { DataSource } from "typeorm";
-import BossRaid from "../entity/BossRaid";
 import RaidRecord from "../entity/RaidRecord";
 import User from "../entity/User";
 
@@ -20,7 +19,7 @@ const database = new DataSource({
   database: process.env.TYPEORM_DATABASE,
   logging: false,
   synchronize: true,
-  entities: [User, BossRaid, RaidRecord],
+  entities: [User, RaidRecord],
   charset: "utf8mb4",
 });
 
