@@ -7,13 +7,18 @@ import {
 } from "../interfaces/IRaidRecord";
 import Joi from "joi";
 import axios from "axios";
+import { erorrGenerator } from "../middlewares/errorGenerator";
 
 const timeLimit = async (limit: number) => {
   const start: any = new Date();
   setTimeout(async () => {
-    await raidRecordDao.closeRaidDao();
-    const end: any = new Date();
-    console.log((end - start) / 1000);
+    try {
+      await raidRecordDao.closeRaidDao();
+      const end: any = new Date();
+      console.log((end - start) / 1000);
+    } catch (err) {
+      console.log(err);
+    }
   }, limit * 1000);
 };
 
@@ -35,7 +40,6 @@ const checkRecord = async () => {
   if (result["condition2"][0]?.endTime === null) {
     value.canEnter = false;
     value.enteredUserId = await result.condition2[0].userId;
-    console.log(value);
     return value;
   } else {
     return value;

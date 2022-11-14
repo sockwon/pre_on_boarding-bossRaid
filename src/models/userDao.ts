@@ -13,12 +13,25 @@ const createUserDao = async () => {
 };
 
 const getUserDao = async (userId: number) => {
-  const result = await database
+  const totalScore = await database
     .getRepository(User)
     .createQueryBuilder("user")
-    .leftJoinAndSelect(RaidRecord, "raidRecord", "raidRecord.userId = user.id")
+    .select("user.totalScore")
     .where("user.id =:id", { id: userId })
+    .getOne();
+
+  const raidHistory = await database
+    .getRepository(RaidRecord)
+    .createQueryBuilder("a")
+    .select(["a.id", "a.score", "a.enterTime", "a.endTime"])
+    .where("a.userId =:id", { id: userId })
     .getMany();
+
+  const result = {
+    totalScore: totalScore?.totalScore,
+    bossRaidHistory: raidHistory,
+  };
+
   return result;
 };
 

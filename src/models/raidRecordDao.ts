@@ -7,7 +7,6 @@ import {
   IScores,
 } from "../interfaces/IRaidRecord";
 import { erorrGenerator } from "../middlewares/errorGenerator";
-import { networkInterfaces } from "os";
 
 const startCondition1 = async () => {
   return await database
@@ -88,6 +87,10 @@ const endRaidDao = async (data: IRaidEndInput) => {
     erorrGenerator(403);
   }
 
+  if (raidRecord[0].RaidRecord_userId !== data.userId) {
+    erorrGenerator(403);
+  }
+
   const userLevel: number = raidRecord[0].RaidRecord_level;
   const score = data.level[userLevel - 1]["score"];
 
@@ -105,14 +108,18 @@ const endRaidDao = async (data: IRaidEndInput) => {
 const closeRaidDao = async () => {
   const lastRecord = await startCondition2();
   const recordId = lastRecord[0].id;
-  const result = await database
+
+  if (lastRecord[0].endTime !== null) {
+    return;
+  }
+
+  await database
     .createQueryBuilder()
     .update(RaidRecord)
     .set({ endTime: () => `NOW()` })
     .where("id = :id", { id: recordId })
     .execute();
-  console.log("lastRecord change:", result);
-  return result;
+  erorrGenerator(403, "timeout");
 };
 
 export default { checkRecordDao, startRaidDao, endRaidDao, closeRaidDao };
