@@ -6,4 +6,6 @@ const router = Router();
 
 router.post("/", errorHandlerAsync(userController.userCreateControll));
 
+router.get("/:userId", errorHandlerAsync(userController.getUserControll));
+
 export default router;

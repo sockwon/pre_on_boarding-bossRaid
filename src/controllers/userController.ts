@@ -7,4 +7,10 @@ const userCreateControll = async (req: Request, res: Response) => {
   res.status(201).json({ userId });
 };
 
-export default { userCreateControll };
+const getUserControll = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const result = await userService.getUser(Number(userId));
+  res.status(200).json({ message: "success", result });
+};
+
+export default { userCreateControll, getUserControll };
