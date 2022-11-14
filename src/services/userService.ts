@@ -4,4 +4,8 @@ const createUser = async () => {
   return await userDao.createUserDao();
 };
 
-export default { createUser };
+const getUser = async (userId: number) => {
+  return await userDao.getUserDao(userId);
+};
+
+export default { createUser, getUser };

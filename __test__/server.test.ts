@@ -10,18 +10,13 @@ import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
 
 describe("server test:", () => {
   let app: any;
-  let server: any;
   const consoleSpy = jest.spyOn(console, "log");
 
   beforeAll(() => {
     app = createApp();
-    server = app.listen(8001, () => {
-      console.log("Listening on Port 8001");
-    });
   });
   afterAll(async () => {
     await database.destroy();
-    server.close();
   });
 
   test("test app: success", async () => {
