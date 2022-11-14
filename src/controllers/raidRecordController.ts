@@ -9,7 +9,14 @@ const checkRecordControll = async (req: Request, res: Response) => {
 const startRaidControll = async (req: Request, res: Response) => {
   const data = req.body;
   const result = await raidRecordService.startRaid(data);
+
   res.status(201).json(result);
 };
 
-export default { checkRecordControll, startRaidControll };
+const endRaidControll = async (req: Request, res: Response) => {
+  const data = req.body;
+  await raidRecordService.endRaid(data);
+  res.status(201).end();
+};
+
+export default { checkRecordControll, startRaidControll, endRaidControll };
