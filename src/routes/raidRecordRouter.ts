@@ -4,6 +4,11 @@ import errorHandlerAsync from "../middlewares/errorHandler";
 
 const router = Router();
 
-router.get("/", errorHandlerAsync(raidRecordController.getRaidRecordControll));
+router.get("/", errorHandlerAsync(raidRecordController.checkRecordControll));
+
+router.post(
+  "/enter",
+  errorHandlerAsync(raidRecordController.startRaidControll)
+);
 
 export default router;
