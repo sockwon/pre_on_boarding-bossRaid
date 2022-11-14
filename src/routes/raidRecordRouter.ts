@@ -11,4 +11,6 @@ router.post(
   errorHandlerAsync(raidRecordController.startRaidControll)
 );
 
+router.post("/end", errorHandlerAsync(raidRecordController.endRaidControll));
+
 export default router;
