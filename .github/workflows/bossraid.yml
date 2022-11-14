@@ -11,6 +11,8 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
+    env: 
+      bossraid: ${{ screts.bossraid }}
 
     strategy:
       matrix:
@@ -25,4 +27,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
+    - run: echo bossraid
     - run: npm test
