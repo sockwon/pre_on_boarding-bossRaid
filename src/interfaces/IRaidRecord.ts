@@ -7,3 +7,8 @@ export interface IRaidRecord {
   enterTime: Date;
   endTime: Date;
 }
+
+export interface IRaidRecordInput {
+  userId: number;
+  level: number;
+}

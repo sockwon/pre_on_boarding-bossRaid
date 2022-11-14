@@ -1,3 +1,4 @@
+import { networkInterfaces } from "os";
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -29,7 +30,12 @@ export class RaidRecord {
   @CreateDateColumn()
   enterTime!: Date;
 
-  @UpdateDateColumn({ type: "timestamp", nullable: true, default: null })
+  @Column({
+    type: "timestamp",
+    default: () => null,
+    nullable: true,
+    onUpdate: "NOW()",
+  })
   endTime!: Date;
 }
 

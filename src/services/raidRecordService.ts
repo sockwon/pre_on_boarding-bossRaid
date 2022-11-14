@@ -1,8 +1,8 @@
 import raidRecordDao from "../models/raidRecordDao";
-import { IRaidRecord } from "../interfaces/IRaidRecord";
+import { IRaidRecord, IRaidRecordInput } from "../interfaces/IRaidRecord";
 
-const getRaidRecord = async () => {
-  const result = await raidRecordDao.getRecordDao();
+const checkRecord = async () => {
+  const result = await raidRecordDao.checkRecordDao();
   const value = {
     canEnter: true,
     enteredUserId: null,
@@ -16,4 +16,9 @@ const getRaidRecord = async () => {
   }
 };
 
-export default { getRaidRecord };
+const startRaid = async (data: IRaidRecordInput) => {
+  const result = await raidRecordDao.startRaidDao(data);
+  return result;
+};
+
+export default { checkRecord, startRaid };
