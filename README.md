@@ -159,17 +159,7 @@
     | 2 | totalScore | int | y | 0 | 보스레이드 종료시 업데이트 |
     | 4 | created_at | timestamp |  | timestamp | 자동생성 |
     | 5 | updated_at | timestamp |  | timestamp | 자동생성 |
-- bossRaid: staticData 웹서버로 캐싱
-    
-    
-    | ID | column | type | required | default | etc |
-    | --- | --- | --- | --- | --- | --- |
-    | 1 | bossRaidId | int | y |  | 자동생성 |
-    | 2 | canEnter | boolean | y | true | 보스레이드 종료시 업데이트 |
-    | 3 | enteredUserId | int | y | null | 보스레이드 참여시 자동 업데이트 |
-    | 4 | staticDataURL | string | y |  | 웹 주소 |
-    | 5 | created_at | timestamp |  | timestamp | 자동생성 |
-    | 6 | updated_at | timestamp |  | timestamp | 자동생성 |
+
 - raidRecord
     
     
