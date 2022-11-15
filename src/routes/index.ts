@@ -8,4 +8,6 @@ router.use("/user", userRouter);
 
 router.use("/bossRaid", raidRecordRouter);
 
+router.use("/bossRaid/topRankerList", userRouter);
+
 export default router;
