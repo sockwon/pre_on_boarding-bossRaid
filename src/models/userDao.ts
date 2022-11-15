@@ -2,6 +2,15 @@ import database from "./database";
 import User from "../entity/User";
 import RaidRecord from "../entity/RaidRecord";
 
+const isUser = async (userId: number) => {
+  return await database.query(
+    `
+  SELECT EXISTS(SELECT * FROM user WHERE user.id= ?)
+  `,
+    [userId]
+  );
+};
+
 const createUserDao = async () => {
   const result = await database
     .createQueryBuilder()
@@ -55,4 +64,4 @@ const getTopRankerInfoListDao = async () => {
   `);
 };
 
-export default { createUserDao, getUserDao, getTopRankerInfoListDao };
+export default { isUser, createUserDao, getUserDao, getTopRankerInfoListDao };

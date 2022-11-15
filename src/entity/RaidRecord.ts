@@ -1,12 +1,9 @@
-import { networkInterfaces } from "os";
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
   ManyToOne,
-  JoinTable,
 } from "typeorm";
 import User from "./User";
 

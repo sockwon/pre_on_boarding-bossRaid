@@ -13,13 +13,15 @@ describe("user test:", () => {
   beforeAll(async () => {
     app = createApp();
     await database.initialize();
+
     await database
       .createQueryBuilder()
       .insert()
       .into(User)
-      .values({})
+      .values({ totalScore: 85 })
       .execute();
   });
+
   afterAll(async () => {
     await database.query(`SET foreign_key_checks = 0`);
     await database.query(`TRUNCATE user`);
@@ -30,5 +32,13 @@ describe("user test:", () => {
 
   test("user create: success", async () => {
     await request(app).post("/user").send({}).expect(201).expect({ userId: 2 });
+  });
+
+  test("get user: success", async () => {
+    await request(app).get("/user/1").expect(200);
+  });
+
+  test("get user: success", async () => {
+    await request(app).get("/user/999").expect(401);
   });
 });
