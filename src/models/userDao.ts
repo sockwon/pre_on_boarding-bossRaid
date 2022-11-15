@@ -12,7 +12,7 @@ const createUserDao = async () => {
   return result;
 };
 
-const getUserDao = async (userId: number) => {
+const getTotalScore = async (userId: number) => {
   const totalScore = await database
     .getRepository(User)
     .createQueryBuilder("user")
@@ -20,6 +20,10 @@ const getUserDao = async (userId: number) => {
     .where("user.id =:id", { id: userId })
     .getOne();
 
+  return totalScore;
+};
+
+const getRaidHistory = async (userId: number) => {
   const raidHistory = await database
     .getRepository(RaidRecord)
     .createQueryBuilder("a")
@@ -27,12 +31,28 @@ const getUserDao = async (userId: number) => {
     .where("a.userId =:id", { id: userId })
     .getMany();
 
+  return raidHistory;
+};
+
+const getUserDao = async (userId: number) => {
+  const totalScore = await getTotalScore(userId);
+  const raidHistory = await getRaidHistory(userId);
   const result = {
-    totalScore: totalScore?.totalScore,
+    totalScore: totalScore,
     bossRaidHistory: raidHistory,
   };
 
   return result;
 };
 
-export default { createUserDao, getUserDao };
+const getTopRankerInfoListDao = async () => {
+  return await database.query(`
+    SELECT 
+    user.id userId, 
+    user.totalScore, 
+    dense_rank() over (order by totalScore desc) as ranking 
+    FROM user
+  `);
+};
+
+export default { createUserDao, getUserDao, getTopRankerInfoListDao };

@@ -13,4 +13,10 @@ const getUserControll = async (req: Request, res: Response) => {
   res.status(200).json(result);
 };
 
-export default { userCreateControll, getUserControll };
+const getUserRankingControll = async (req: Request, res: Response) => {
+  const { userId } = req.body;
+  const result = await userService.getUserRanking(userId);
+  res.status(201).json(result);
+};
+
+export default { userCreateControll, getUserControll, getUserRankingControll };

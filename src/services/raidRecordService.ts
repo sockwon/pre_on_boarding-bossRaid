@@ -7,7 +7,6 @@ import {
 } from "../interfaces/IRaidRecord";
 import Joi from "joi";
 import axios from "axios";
-import { erorrGenerator } from "../middlewares/errorGenerator";
 
 const timeLimit = async (limit: number) => {
   const start: any = new Date();

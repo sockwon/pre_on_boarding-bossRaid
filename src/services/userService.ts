@@ -1,4 +1,6 @@
 import userDao from "../models/userDao";
+import { IRankingInfo } from "../interfaces/IUser";
+import { rankDataProcess } from "../middlewares/processRankingData";
 import Joi from "joi";
 
 const schemaGetUser = Joi.object({
@@ -14,4 +16,12 @@ const getUser = async (userId: number) => {
   return await userDao.getUserDao(userId);
 };
 
-export default { createUser, getUser };
+const getUserRanking = async (userId: number) => {
+  await schemaGetUser.validateAsync({ userId });
+
+  const ranking = await userDao.getTopRankerInfoListDao();
+
+  return await rankDataProcess(userId, ranking);
+};
+
+export default { createUser, getUser, getUserRanking };
