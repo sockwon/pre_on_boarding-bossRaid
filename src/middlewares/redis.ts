@@ -1,5 +1,6 @@
-import express from "express";
-import redis from "redis";
+import * as redis from "redis";
+import { rankDataProcess } from "./processRankingData";
+import { Request, Response, NextFunction } from "express";
 
 const redisConnect = async () => {
   const redisClient = redis.createClient({
@@ -21,4 +22,19 @@ const redisConnect = async () => {
   return redisClient.v4;
 };
 
-export default { redisConnect };
+const checkCache = async (req: Request, res: Response, next: NextFunction) => {
+  const { userId } = req.body;
+  const redisCli = await redisConnect();
+  console.info("exists test:", await redisCli.get("ranking"));
+  const exist = await redisCli.exists("ranking");
+
+  if (exist) {
+    const data = await redisCli.get("ranking");
+    const result = await rankDataProcess(userId, JSON.parse(data));
+    res.status(200).json(result);
+  } else {
+    next();
+  }
+};
+
+export { redisConnect, checkCache };
