@@ -23,7 +23,7 @@ const timeLimit = async (limit: number) => {
 
 const schemaStartRaid = Joi.object({
   userId: Joi.number().required(),
-  level: Joi.number().required(),
+  level: Joi.number().integer().min(1).max(3).required(),
 });
 
 const checkRecord = async () => {
@@ -52,17 +52,6 @@ const bossRaidData = async () => {
   });
 };
 
-const startRaid = async (data: IRaidRecordInput) => {
-  await schemaStartRaid.validateAsync(data);
-
-  const temp = await bossRaidData();
-  const limit = await temp.data.bossRaids[0].bossRaidLimitSeconds;
-  await timeLimit(limit);
-
-  const result = await raidRecordDao.startRaidDao(data);
-  return result;
-};
-
 const scoresAccess = async () => {
   const redisCli = await redisConnect();
   const exist = await redisCli.exists("scores");
@@ -76,6 +65,18 @@ const scoresAccess = async () => {
     await redisCli.expire("scores", 3600);
     return axiosData.data.bossRaids;
   }
+};
+
+const startRaid = async (data: IRaidRecordInput) => {
+  await schemaStartRaid.validateAsync(data);
+
+  const temp = await scoresAccess();
+
+  const limit = await temp[0].bossRaidLimitSeconds;
+  await timeLimit(limit);
+
+  const result = await raidRecordDao.startRaidDao(data);
+  return result;
 };
 
 const endRaid = async (data: IRaidEndInput) => {
