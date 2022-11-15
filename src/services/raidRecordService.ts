@@ -1,12 +1,12 @@
 import raidRecordDao from "../models/raidRecordDao";
 import {
-  IRaidRecord,
   IRaidRecordInput,
   Value,
   IRaidEndInput,
 } from "../interfaces/IRaidRecord";
 import Joi from "joi";
 import axios from "axios";
+import { redisConnect } from "../middlewares/redis";
 
 const timeLimit = async (limit: number) => {
   const start: any = new Date();
@@ -63,9 +63,24 @@ const startRaid = async (data: IRaidRecordInput) => {
   return result;
 };
 
+const scoresAccess = async () => {
+  const redisCli = await redisConnect();
+  const exist = await redisCli.exists("scores");
+
+  if (exist) {
+    const scores = await redisCli.get("scores");
+    return JSON.parse(scores);
+  } else {
+    const axiosData = await bossRaidData();
+    await redisCli.set("scores", JSON.stringify(axiosData.data.bossRaids));
+    await redisCli.expire("scores", 3600);
+    return axiosData.data.bossRaids;
+  }
+};
+
 const endRaid = async (data: IRaidEndInput) => {
-  const axiosData = await bossRaidData();
-  const level = axiosData.data.bossRaids[0].levels;
+  const scores = await scoresAccess();
+  const level = await scores[0].levels;
   data.level = level;
   return await raidRecordDao.endRaidDao(data);
 };
