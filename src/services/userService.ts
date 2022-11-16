@@ -16,7 +16,7 @@ const createUser = async () => {
 
 const checkUser = async (userId: number) => {
   const temp = await userDao.isUser(userId);
-  if (Object.values(temp[0])[0] !== "1") {
+  if (Object.values(temp[0])[0] === "0") {
     erorrGenerator(401, "not exist user");
   }
 };
