@@ -25,7 +25,6 @@ const redisConnect = async () => {
 const checkCache = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req.body;
   const redisCli = await redisConnect();
-  console.info("exists test:", await redisCli.get("ranking"));
   const exist = await redisCli.exists("ranking");
 
   if (exist) {
