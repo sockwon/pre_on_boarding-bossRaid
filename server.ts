@@ -7,7 +7,6 @@ dotenv.config();
 
 import { createApp } from "./app";
 import dbStart from "./dbStart";
-import cron from "node-cron";
 
 /**
  * Initialize the server.

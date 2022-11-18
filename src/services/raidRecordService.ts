@@ -58,11 +58,13 @@ const scoresAccess = async () => {
 
   if (exist) {
     const scores = await redisCli.get("scores");
+    await redisCli.quit();
     return JSON.parse(scores);
   } else {
     const axiosData = await bossRaidData();
     await redisCli.set("scores", JSON.stringify(axiosData.data.bossRaids));
     await redisCli.expire("scores", 3600);
+    await redisCli.quit();
     return axiosData.data.bossRaids;
   }
 };

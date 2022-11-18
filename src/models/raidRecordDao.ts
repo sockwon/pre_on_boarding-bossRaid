@@ -42,8 +42,6 @@ const startRaidDao = async (data: IRaidRecordInput) => {
   }
 
   if (condition1 === 0 || condition2[0]?.endTime !== null) {
-    console.log("condition1", condition1);
-    console.log("condition2", condition2[0]?.endTime);
     const result = await database
       .createQueryBuilder()
       .insert()
