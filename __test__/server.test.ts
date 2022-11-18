@@ -11,8 +11,7 @@ import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
 describe("server test:", () => {
   let app: any;
   const consoleSpy = jest.spyOn(console, "log");
-
-  beforeAll(() => {
+  beforeAll(async () => {
     app = createApp();
   });
   afterAll(async () => {

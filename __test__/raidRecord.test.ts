@@ -3,7 +3,6 @@ dotenv.config();
 
 import request from "supertest";
 import database from "../src/models/database";
-import User from "../src/entity/User";
 
 import { createApp } from "../app";
 import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";

@@ -4,13 +4,25 @@ dotenv.config();
 import request from "supertest";
 import { erorrGenerator } from "../src/middlewares/errorGenerator";
 import errorHandlerAsync from "../src/middlewares/errorHandler";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { rankDataProcess } from "../src/middlewares/processRankingData";
-import { redisConnect } from "../src/middlewares/redis";
+import * as redis from "../src/middlewares/redis";
 
-import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
+import {
+  describe,
+  test,
+  expect,
+  beforeAll,
+  afterAll,
+  afterEach,
+} from "@jest/globals";
+import { createApp } from "../app";
 
 describe("middlware test:", () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   test("error Generator: statuscode", () => {
     try {
       erorrGenerator(999);
@@ -57,16 +69,26 @@ describe("middlware test:", () => {
 
   test("redis: redis server", async () => {
     const infoSpy = jest.spyOn(console, "info");
-    await redisConnect();
+    await redis.redisConnect();
 
     expect(infoSpy).toHaveBeenLastCalledWith("Redis Connected");
   });
 
-  test("redis: get, set", async () => {
-    const redisCli = await redisConnect();
+  test("redis: server get, set", async () => {
+    const redisCli = await redis.redisConnect();
     await redisCli.set("test", "success");
     await redisCli.expire("test", 5);
     const result = await redisCli.get("test");
     expect(result).toBe("success");
+  });
+
+  test("redis: isExist", async () => {
+    const result = await redis.isExist();
+    expect(result).toBeDefined();
+  });
+
+  test("redis: getRankingDataFromRedis", async () => {
+    const result = await redis.getRankingDataFromRedis();
+    expect(result).toBeDefined();
   });
 });

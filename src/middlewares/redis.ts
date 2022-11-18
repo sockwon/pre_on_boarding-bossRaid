@@ -22,18 +22,46 @@ const redisConnect = async () => {
   return redisClient.v4;
 };
 
+const isExist = async () => {
+  const redisCli = await redisConnect();
+
+  const exist = await redisCli.exists("ranking");
+  await redisCli.quit();
+  return exist;
+};
+
+const getRankingDataFromRedis = async () => {
+  const redisCli = await redisConnect();
+
+  const data = await redisCli.get("ranking");
+  await redisCli.quit();
+  return data;
+};
+
+const processData = async (userId: number, data: any) => {
+  const jsonData = JSON.parse(data);
+
+  const result = await rankDataProcess(userId, jsonData);
+  return result;
+};
+
 const checkCache = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req.body;
-  const redisCli = await redisConnect();
-  const exist = await redisCli.exists("ranking");
+  const exist = await isExist();
 
   if (exist) {
-    const data = await redisCli.get("ranking");
-    const result = await rankDataProcess(userId, JSON.parse(data));
-    res.status(200).json(result);
+    const result = await getRankingDataFromRedis();
+    const processedResult = await processData(userId, result);
+    res.status(200).json(processedResult);
   } else {
     next();
   }
 };
 
-export { redisConnect, checkCache };
+export {
+  redisConnect,
+  checkCache,
+  isExist,
+  getRankingDataFromRedis,
+  processData,
+};

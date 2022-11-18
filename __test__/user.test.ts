@@ -13,6 +13,12 @@ describe("user test:", () => {
   beforeAll(async () => {
     app = createApp();
     await database.initialize();
+    await database
+      .createQueryBuilder()
+      .insert()
+      .into(User)
+      .values({})
+      .execute();
   });
 
   afterAll(async () => {
@@ -25,7 +31,7 @@ describe("user test:", () => {
   });
 
   test("user create: success", async () => {
-    await request(app).post("/user").send({}).expect(201).expect({ userId: 1 });
+    await request(app).post("/user").expect(201).expect({ userId: 2 });
   });
 
   test("get user: success", async () => {

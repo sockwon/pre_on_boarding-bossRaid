@@ -36,11 +36,12 @@ const getUserRanking = async (userId: number) => {
 
   await redisCli.set("ranking", JSON.stringify(ranking));
   await redisCli.expire("ranking", 3600);
+  await redisCli.quit();
 
   return await rankDataProcess(userId, ranking);
 };
 
-cron.schedule("* */23 * * *", async () => {
+cron.schedule("0 0 */11 * * *", async () => {
   console.info("redis warmingup: getUserRanking");
   await getUserRanking(1);
 });
