@@ -1,11 +1,7 @@
 import database from "./database";
 import RaidRecord from "../entity/RaidRecord";
 import User from "../entity/User";
-import {
-  IRaidRecordInput,
-  IRaidEndInput,
-  IScores,
-} from "../interfaces/IRaidRecord";
+import { IRaidRecordInput, IRaidEndInput } from "../interfaces/IRaidRecord";
 import { erorrGenerator } from "../middlewares/errorGenerator";
 
 const startCondition1 = async () => {
@@ -42,14 +38,48 @@ const startRaidDao = async (data: IRaidRecordInput) => {
   }
 
   if (condition1 === 0 || condition2[0]?.endTime !== null) {
-    const result = await database
-      .createQueryBuilder()
-      .insert()
-      .into(RaidRecord)
-      .values({ level: data.level, user: data.userId })
-      .execute();
-    const raidRecordId = result.identifiers[0].id;
-    return { isEntered: true, raidRecordId };
+    let result;
+    let raidRecord;
+    const queryRunner = database.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      // const id = await queryRunner.query(
+      //   `SELECT * FROM raid_record ORDER BY raid_record.id DESC LIMIT 1`
+      // );
+      // result = await queryRunner.manager
+      //   .createQueryBuilder()
+      //   .useTransaction(true)
+      //   .setLock("pessimistic_write")
+      //   .insert()
+      //   .into(RaidRecord)
+      //   .values({ id: id[0].id + 1, level: data.level, user: data.userId })
+      //   .execute();
+      await queryRunner.query(`lock tables raid_record WRITE`);
+      result = await queryRunner.query(
+        `INSERT INTO raid_record (level, userId) VALUES(${data.level}, ${data.userId})`
+      );
+      await queryRunner.query(`unlock tables`);
+      raidRecord = await startCondition2();
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      queryRunner.rollbackTransaction();
+    } finally {
+      queryRunner.release();
+    }
+
+    // await database
+    //   .createQueryBuilder()
+    //   .insert()
+    //   .into(RaidRecord)
+    //   .values({ level: data.level, user: data.userId })
+    //   .execute();
+    // console.log("success!!");
+    // await database.query(`unlock table`);
+    // const raidRecordId = result?.identifiers[0].id;
+    // const raidRecord = await startCondition2();
+    return { isEntered: true, raidRecord: raidRecord[0].id };
   } else {
     return { isEntered: false, raidRecordId: null };
   }

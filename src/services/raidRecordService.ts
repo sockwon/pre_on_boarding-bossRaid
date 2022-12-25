@@ -7,14 +7,12 @@ import {
 import Joi from "joi";
 import axios from "axios";
 import { redisConnect } from "../middlewares/redis";
+import { erorrGenerator } from "../middlewares/errorGenerator";
 
 const timeLimit = async (limit: number) => {
-  const start: any = new Date();
   setTimeout(async () => {
     try {
       await raidRecordDao.closeRaidDao();
-      const end: any = new Date();
-      console.log((end - start) / 1000);
     } catch (err) {
       console.log(err);
     }
@@ -73,7 +71,6 @@ const startRaid = async (data: IRaidRecordInput) => {
   await schemaStartRaid.validateAsync(data);
 
   const temp = await scoresAccess();
-
   const limit = await temp[0].bossRaidLimitSeconds;
   await timeLimit(limit);
 

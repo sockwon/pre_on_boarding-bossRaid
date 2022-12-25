@@ -93,7 +93,7 @@ const getUserRanking = async (userId: number) => {
 /**
  * 12시간 마다 랭킹 정보를 업데이트 한다.
  */
-cron.schedule("0 0 */11 * * *", async () => {
+cron.schedule("0 0 */23 * * *", async () => {
   console.info("redis warmingup: getUserRanking");
   const rawRanking = await userDao.getTopRankerInfoListDao();
   await redisUpdateForRanking(rawRanking);
